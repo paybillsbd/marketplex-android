@@ -1,0 +1,186 @@
+#activity_main.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.oshin.mywork5.MainActivity"
+
+    android:orientation="vertical">
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Click"
+    android:id="@+id/b1"
+    android:layout_marginLeft="35dp"
+    android:layout_marginTop="35sp"
+
+    />
+
+    <TextView
+        android:layout_margin="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="35dp"
+        android:textColor="#000000"
+        android:id="@+id/t1"
+
+        />
+
+</RelativeLayout>
+
+
+#MainActivity.java
+
+package com.example.oshin.mywork5;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+   public Button b1;
+    public static TextView t1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        b1= (Button) findViewById(R.id.b1);
+        t1 = (TextView) findViewById(R.id.t1);
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+             Main2Activity a2 = new Main2Activity();
+                a2.execute();
+
+
+
+            }
+        });
+
+    }
+}
+
+
+#activity_main2.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.oshin.mywork5.Main2Activity">
+
+</LinearLayout>
+
+
+
+
+#Main2Activity.java
+
+
+package com.example.oshin.mywork5;
+
+import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class Main2Activity extends AsyncTask < Void,Void,Void > {
+     public  static  String data = "";
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+
+        try {
+            URL url = new URL("http://portfolio.asdtechltd.com/api/v1/cases/2");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+           String line = "";
+
+            while (line != null)
+            {
+
+                line=bufferedReader.readLine();
+                data = data+ line;
+
+            }
+
+
+
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+        MainActivity.t1.setText(this.data);
+    }
+}
+
+
+Android Manifest.xml
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.oshin.mywork5">
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Main2Activity"></activity>
+    </application>
+
+</manifest>
+
+
